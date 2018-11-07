@@ -214,7 +214,7 @@
                            	<ul id="myTab" class="nav nav-tabs" style="font-size:14px;">
                                 <li id="tabroomi" class="active " ><a href="#roomi" data-toggle="tab">Room Info</a></li>
                                 <li id="tabtenanti"><a href="#tenanti" data-toggle="tab">Summary</a></li>
-								<li id="tabexpensei"><a href="#tabexpensei" data-toggle="tab">Expense</a></li>
+								<li id="tabroomi"><a href="#tabexpensei" data-toggle="tab">Expense</a></li>
                             </ul>
                             
                             <div class="pull-right">
@@ -340,8 +340,51 @@
                                         </div>
                                     </div>
 								</div>
+								<!-- isi tab expense -->
 								<div class="tab-pane fade in" id="tabexpensei">
-									
+									<div class="page-grid">
+										<div class="row">
+											<div style="margin-bottom:25px;margin-left:275px" class="pull-left col-lg-3">
+												<label for="sdate" class="control-label"></label>
+												<div id="sdatepickerEx" class="input-group date">
+													<input id="sdate" name="sdate" type="text" class="form-control" placeholder="Pick Starting Date" readonly required>
+													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div style="margin-bottom:25px" class="col-lg-3">
+												<label for="edate" class="control-label"></label>
+												<div id="edatepickerEx" class="input-group date">
+													<input id="edate" name="edate" type="text" class="form-control" placeholder="Pick End Date" readonly required>
+													<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="page-tables">
+                                        <!-- Table -->
+                                        <div class="table-responsive">
+											<table cellpadding="0" class="table table-striped stripe row-border display nowrap" cellspacing="0" border="0" id="data-table5" width="100%">
+												<thead>
+													<tr class='dt-body-left'>
+														<th>ID Expense</th>
+														<th>Date</th>
+														<th>Details</th>
+														<th>Amount</th>
+													</tr>
+												</thead>
+												<tbody></tbody>
+												<tfoot>
+													<tr>
+														<th>Total</th>
+														<th>&nbsp;</th>
+														<th>&nbsp;</th>
+														<th id="AmountTot" style="padding:10px;font-weight:normal;"></th>
+													</tr>
+												</tfoot>
+											</table>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
 								</div>
 							</div>
 						</div>
@@ -623,6 +666,14 @@
 			autoclose: true
 		});
 		$('#edatepicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#sdatepickerEx').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#edatepickerEx').datepicker({
 			format: "dd-M-yy",
 			autoclose: true
 		});

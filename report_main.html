@@ -155,6 +155,22 @@
 							</div>
 							<div class="page-grid">
 								<div id="content" class="container">
+									<div class="row">
+									<div style="margin-bottom:25px;margin-left:225px" class="col-lg-3">
+										<label for="sdate" class="control-label"></label>
+										<div id="sdatepicker" class="input-group date">
+											<input id="sdate" name="sdate" type="text" class="form-control" placeholder="Pick Starting Date" readonly required>
+											<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div style="margin-bottom:25px" class="col-lg-3">
+										<label for="edate" class="control-label"></label>
+										<div id="edatepicker" class="input-group date">
+											<input id="edate" name="edate" type="text" class="form-control" placeholder="Pick End Date" readonly required>
+											<span class="input-group-addon add-on btn btn-default" style="cursor: pointer;"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
 									<div class="row" style="margin-bottom:8px;">
 										<div class="page-tables">
 											<!-- Table -->
@@ -232,6 +248,16 @@
 		<script src="js/custom.js"></script>
 		<script src="js/custom_logincheck.js"></script>
 		<script src="js/custom_report_main.js"></script>
+		<script>
+		$('#sdatepicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		$('#edatepicker').datepicker({
+			format: "dd-M-yy",
+			autoclose: true
+		});
+		</script>
 		<!-- Javascript for this page -->        
     </body>	
 </html>
