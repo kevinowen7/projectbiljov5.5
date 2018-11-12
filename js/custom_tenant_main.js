@@ -31,14 +31,18 @@ $(document).ready(function() {
 		"order": [[ 0, "asc" ]],
 		"columnDefs": [
 		{ 
+			targets: 0,
+			width: "30%"
+		},
+		{ 
 			targets: -1,
-			width: "13%",
+			width: "20%",
 			orderable: false,
 			defaultContent:"<button id='editbutt' class='btn btn-xs btn-warning' title='Edit'><i class='fa fa-pencil'></i></button> <button id='extend' class='btn btn-xs btn-info' title='Extend'><i class='fa fa-user-plus'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Remove'><i class='fa fa-times'></i></button> <button id='terminatebutt' class='btn btn-xs btn-danger' title='Terminate'><i class='fa fa-sign-out'></i></button>"
 		}]
 	})
-	table2.row.add(["<a href='javaScript:void(0)'>Bea Curran</a>","t_1","101 010 100","9/20/2018",null]);
-	table2.row.add(["<a href='javaScript:void(0)'>Briana Holloway</a>","t_3","101 010 200","9/28/2018",null]);
+	table2.row.add(["<a href='javaScript:void(0)'>Bea Curran</a>","101 010 100","9/20/2018",null]);
+	table2.row.add(["<a href='javaScript:void(0)'>Briana Holloway</a>","101 010 200","9/28/2018",null]);
 	table2.draw();
 	setTimeout(function(){
 		//stop loading icon

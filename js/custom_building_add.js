@@ -465,6 +465,7 @@ function uploadDB() {
 						$("#loadingUpload").fadeOut(250, function() {
 							$(this).hide();
 						})
+						window.location="building_list.html"
 					}).catch(function onError(err) {
 						//error notification
 						$.gritter.add({

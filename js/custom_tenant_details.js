@@ -840,6 +840,7 @@ function extendTenant() {
 		</div>`;
 	$("#tenanthistory").append(theText);
 	//create due on ledger
+	/*
 	var bondPriceInt = parseInt($("#cfbond").val());
 	var rentPriceInt = parseInt($("#cfprice").val());
 	ledgerList.push({
@@ -855,6 +856,7 @@ function extendTenant() {
 		"payment":null
 	});
 	ledgerList = sortArrayByDate(ledgerList);
+	table1.clear();
 	for (x in ledgerList) {
 		table1.row.add([reformatDate(ledgerList[x].date),ledgerList[x].desc,ledgerList[x].invoice,ledgerList[x].payment,null]);	
 	}
@@ -872,6 +874,7 @@ function extendTenant() {
 	$("#extendIntend")
 		.val("")
 		.trigger("change");
+	*/
 	setTimeout(function(){
 		//stop loading icon
 		$("#cover-spin").fadeOut(250, function() {

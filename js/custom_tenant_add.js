@@ -121,6 +121,7 @@ function uploadDB() {
 		$("#loadingUpload").fadeOut(250, function() {
 			$(this).hide();
 		})
+		window.location="tenant_details.html?id=t_5"
 	}, 3000);
 	
 }

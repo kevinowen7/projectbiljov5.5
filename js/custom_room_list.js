@@ -53,20 +53,20 @@ var table3 = $('#data-table3').DataTable({
 	"order": [[ 0, "asc" ]],
 	"columnDefs": [
 	{
-		targets: 0,
+		targets: [0],
 		className: 'dt-body-right'
 	},
 	{
 		targets: [0,1],
-		width: "2%"
+		width: "3%"
 	},
 	{
 		targets: [2,9,10,11],
 		width: "25%"
 	},
 	{
-		targets: [5,6],
-		width: "15%"
+		targets: [4,5,7],
+		width: "4%"
 	},
 	{
 		targets: [2,3,4,5,6,8,9,10,11],
@@ -74,6 +74,18 @@ var table3 = $('#data-table3').DataTable({
 	},
 	{
 		targets: [2,9,10,11],
+		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
+	}]
+})
+
+//table tab expense
+var table5 = $('#data-table5').DataTable({
+	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
+	"iDisplayLength": -1,
+	"order": [[ 1, "asc" ]],
+	"columnDefs": [
+	{
+		targets: -1,
 		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
 	}]
 })
@@ -141,115 +153,6 @@ function removeRoom(roomID) {
 	
 }
 
-function expense() {
-	buildno = $("#buildNo").val();
-	//trigger modal popup
-	$("#modalExpense").modal();
-	//modal confirmation listener
-	$("#confirmExpense").on('click', function () {
-		//stop modal confirmation listener
-		$("#confirmExpense").off();
-		//success notification
-		$.gritter.add({
-			title: 'Expense Added',
-			text:  'Expense in Builading No: '+buildno+' was successfully added to the database.',
-			image: './img/bell.png',
-			sticky: false,
-			time: 3500,
-			class_name: 'gritter-custom'
-		})
-		
-	})
-	
-}
-
-
-function payment(x){
-	//trigger modal popup
-	$("#modalPayment").modal();	
-	//modal confirmation listener
-	$("#confirmPayment").on('click', function () {
-		before = $("#rec"+x).html();
-		if (before=="-"){
-			before = 0;
-		}
-		hasil = parseInt($("#amountpay").val());
-		//change value
-		$("#rec"+x).html(hasil+parseInt(before));
-		//change balace value
-		due = $("#due"+x).html()
-		if (due=="-"){
-			due = 0	
-		}
-		rec = $("#rec"+x).html()
-		if (rec=="-"){
-			rec = 0	
-		}
-		totalbal = parseInt(rec)-parseInt(due);
-		$("#bal"+x).html(totalbal);
-		//stop modal confirmation listener
-		$("#confirmPayment").off();
-		//success notification
-		$.gritter.add({
-			title: 'Payment Added',
-			text: 'Payment was successfully added',
-			image: './img/bell.png',
-			sticky: false,
-			time: 3500,
-			class_name: 'gritter-custom'
-		})
-		//resetform
-		$("#amountpay").val(null);
-		$("#detailspay").val("");
-		$("#optpay").addClass("hide")
-		$("#otherpay").val("");
-		
-	})
-	
-}
-function invoice(x){
-	//trigger modal popup
-	$("#modalInvoice").modal();	
-	//modal confirmation listener
-	$("#confirmInvoice").on('click', function () {
-		before = $("#due"+x).html();
-		if (before=="-"){
-			before = 0;
-		}
-		hasil = parseInt($("#amountvoice").val());
-		//stop modal confirmation listener
-		$("#confirmInvoice").off();
-		//change value
-		$("#due"+x).html(hasil+parseInt(before));
-		//change balace value
-		due = $("#due"+x).html()
-		if (due=="-"){
-			due = 0	
-		}
-		rec = $("#rec"+x).html()
-		if (rec=="-"){
-			rec = 0	
-		}
-		totalbal = parseInt(rec)-parseInt(due);
-		$("#bal"+x).html(totalbal);
-		//success notification
-		$.gritter.add({
-			title: 'Invoice Added',
-			text: 'Invoice was successfully added',
-			image: './img/bell.png',
-			sticky: false,
-			time: 3500,
-			class_name: 'gritter-custom'
-		})
-		//resetform
-		$("#amountvoice").val(null);
-		$("#detailsvoice").val("");
-		$("#optvoice").addClass("hide")
-		$("#othervoice").val("");
-		$("#rcurrent").val("");
-	})
-}
-
 
 function countTotalDue() {
 	
@@ -290,6 +193,19 @@ function countTotalBalance() {
 	
 }
 
+function expenseTotalAmount() {
+	
+	var totalReceived = 0;
+	for (i=0;i<table5.rows().count();i++) {
+		var ledgerReceived = table5.row(i).data()[3];
+		if (ledgerReceived != null) {
+			totalReceived = totalReceived+ledgerReceived;
+		}
+	}
+	$("#AmountTot").html(get_fmoney(totalReceived));
+	
+}
+
 function get_fmoney(money) {
 	
 	var rev     = parseInt(money, 10).toString().split('').reverse().join('');
@@ -309,31 +225,208 @@ function rem_fmoney(money) {
 	return parseInt(money.substring(4,money.length-2).split(".").join(""))
 	
 }
+
+function reformatDate(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	inputBroke=inputDate.split("/");
+	inputDay=parseInt(inputBroke[1]);
+	inputMonth=parseInt(inputBroke[0]);
+	inputYear=inputBroke[2];
+	outputDay=inputDay;
+	outputMonth=months[inputMonth-1];
+	outputYear=inputYear.split("")[2]+inputYear.split("")[3];
+	return (outputDay+"-"+outputMonth+"-"+outputYear);
+	
+}
+
+function reformatDate2(inputDate) {
+	
+	months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	months2=["01","02","03","04","05","06","07","08","09","10","11","12"];
+	inputBroke=inputDate.split("-");
+	inputDay=inputBroke[0];
+	inputMonth=inputBroke[1];
+	inputYear=inputBroke[2];
+	if (parseInt(inputDay) < 10) {
+		outputDay = "0"+inputDay;
+	} else {
+		outputDay = inputDay;
+	}
+	for (var i=0;i<months.length;i++) {
+		if (inputMonth == months[i]) {
+			outputMonth = months2[i];
+			break
+		}
+	}
+	outputYear = "20"+inputYear;
+	return (outputMonth+"/"+outputDay+"/"+outputYear);
+	
+}
+
+function date_diff_indays(d1, d2) {
+	
+	var diff = Date.parse(d2) - Date.parse(d1);
+	return Math.floor(diff / 86400000);
+	
+}
+
+function sortArrayByDate(oldArray) {
+	
+	var newArray = [];
+	for (i=0;i<oldArray.length;i++) {
+		if (newArray.length==0) {
+			newObj = {
+				"date":oldArray[i].date,
+				"detail":oldArray[i].detail,
+				"amount":oldArray[i].amount,
+				"id":oldArray[i].id,
+			}
+			newArray[0] = newObj;
+		}
+		else {
+			for (j=newArray.length-1;j>=0;j--) {
+				if (date_diff_indays(newArray[j].date,oldArray[i].date)>=0) {
+					for (k=newArray.length-1;k>=j;k--) {
+						newObj = {
+						"date":newArray[k].date,
+						"detail":newArray[k].detail,
+						"amount":newArray[k].amount,
+						"id":newArray[k].id
+						}
+						newArray[k+1] = newObj;
+					}
+					newObj2 = {
+					  "date":oldArray[i].date,
+					  "detail":oldArray[i].detail,
+					  "amount":oldArray[i].amount,
+					  "id":oldArray[i].id
+					}
+					newArray[j+1] = newObj2;
+					break
+				}
+				else {
+					if (j==0) {
+						for (k=newArray.length-1;k>=j;k--) {
+							newObj = {
+							  "date":newArray[k].date,
+							  "detail":newArray[k].detail,
+							  "amount":newArray[k].amount,
+							  "id":newArray[k].id
+							}
+							newArray[k+1] = newObj;
+						}
+						newObj2 = {
+							"date":oldArray[i].date,
+							"detail":oldArray[i].detail,
+							"amount":oldArray[i].amount,
+							"id":oldArray[i].id
+						}
+						newArray[j] = newObj2;
+						break
+					}
+				}
+			}
+		}
+	}
+	return newArray;
+	
+}
+
+var bondList=[];
+var idExpense=1;
+function addExpense(){
+	//collect data from amount form
+	var expenseDate = reformatDate2($("#edateex").val());
+	var expenseAmount = rem_moneydot($("#amountex").val());
+	var expenseDetails = $("#detailsex").val();
+	var expenseDetailsOther = $("#otherex").val();
+	if (expenseDetails == "rtrw fee") {
+		var expenseDetailsFull = "RT/RW fee";
+	} else if (expenseDetails == "tvcable") {
+		var expenseDetailsFull = "TV Cable";
+	} else if (expenseDetails == "internet") {
+		var expenseDetailsFull = "Internet";
+	} else if (expenseDetails == "electricity") {
+		var expenseDetailsFull = "Electricity";
+	} else if (expenseDetails == "laundry") {
+		var expenseDetailsFull = "Laundry";
+	} else {
+		var expenseDetailsFull = "Other Expense - "+expenseDetailsOther;
+	}
+	bondList.push({
+		"date":expenseDate,
+		"detail":expenseDetailsFull,
+		"amount":expenseAmount,
+		"id":idExpense
+	});
+	//reset standard expense
+	bondList = sortArrayByDate(bondList);
+	table5.clear();
+	for (x in bondList) {
+		table5.row.add([bondList[x].id,reformatDate(bondList[x].date),bondList[x].detail,bondList[x].amount]);	
+		idExpense=idExpense+1;
+	}
+	table5.draw();
+	
+	//total
+	expenseTotalAmount();
+	
+	//reset expense form
+	setTimeout(function(){
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function() {
+			$(this).hide();
+		})
+		//reset expense form
+		$('#expenseForm').trigger("reset");
+		$("#optex").hide();
+		//redirect to tab expense
+		$("#tenanti").removeClass("in active")
+		$("#roomi").removeClass("in active")
+		$("#expensei").addClass("in active")
+		$("#tabroomi").removeClass("active")
+		$("#tabexpensei").addClass("active")
+		$("#tabtenanti").removeClass("active")
+		//success notification
+		$.gritter.add({
+			title: 'Expense Added',
+			text: 'Expense was successfully added to the database.',
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		})
+	}, 1000);
+	
+}
+	
 $(document).ready(function() {
-	//check other payment
-	$("#detailspay").on('change', function() {
-		if ($(this).find("option:selected").attr("value") == "other") {
-			$("#optpay").fadeIn(250, function() {
-				$(this).removeClass("hide");
+	//expense add button listener
+	$("#expenseButton").on('click', function() {
+		$("#modalExpense").modal();
+	})
+	//expense amount listener
+	$("#amountex").on('keyup change', function() {
+		$("#amountex").val(get_moneydot($("#amountex").val()));
+	})
+	//expense modal add listener
+	$("#confirmExpense").click(function() {
+		$("#expenseForm").submit();
+	})
+	//expense add form validation
+	$("#expenseForm").validate({
+		submitHandler: function() {
+			$('#modalExpense').modal('hide');
+			$("#cover-spin").fadeIn(250, function() {
+				$(this).show();
 			})
-		} else {
-			$("#optpay").fadeOut(250, function() {
-				$(this).addClass("hide")
-			});
+			addExpense();
 		}
 	})
-	//check other in voice
-	$("#detailsvoice").on('change', function() {
-		if ($(this).find("option:selected").attr("value") == "other") {
-			$("#optvoice").fadeIn(250, function() {
-				$(this).removeClass("hide");
-			})
-		} else {
-			$("#optvoice").fadeOut(250, function() {
-				$(this).addClass("hide")
-			});
-		}
-	})
+
+
+	
 	//check other expense
 	$("#detailsex").on('change', function() {
 		if ($(this).find("option:selected").attr("value") == "other") {
@@ -345,10 +438,6 @@ $(document).ready(function() {
 				$(this).hide();
 			});
 		}
-	})
-	//expense amount listener
-	$("#amountex").on('keyup change', function() {
-		$("#amountex").val(get_moneydot($("#amountex").val()));
 	})
 	
 	
@@ -696,6 +785,9 @@ $(document).ready(function() {
 					})
 				}
 			})
+			//tab expense
+			table5.clear();
+			table5.draw();
 		}
 	})
 	//fill array with data from database
@@ -807,7 +899,9 @@ $(document).ready(function() {
 	if (link_=="tenanti"){
 		$("#tenanti").addClass("in active")
 		$("#roomi").removeClass("in active")
+		$("#expensei").removeClass("in active")
 		$("#tabroomi").removeClass("active")
+		$("#tabexpensei").removeClass("active")
 		$("#tabtenanti").addClass("active")
 	}
 	
