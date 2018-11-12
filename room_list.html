@@ -214,11 +214,11 @@
                            	<ul id="myTab" class="nav nav-tabs" style="font-size:14px;">
                                 <li id="tabroomi" class="active " ><a href="#roomi" data-toggle="tab">Room Info</a></li>
                                 <li id="tabtenanti"><a href="#tenanti" data-toggle="tab">Summary</a></li>
-								<li id="tabroomi"><a href="#tabexpensei" data-toggle="tab">Expense</a></li>
+								<li id="tabexpensei"><a href="#expensei" data-toggle="tab">Expense</a></li>
                             </ul>
                             
                             <div class="pull-right">
-                                <button id="expense" class="btn btn-primary pull-right" onClick="expense()" style="margin-right:5px"><i class="fa fa-plus"></i> Expense</button>
+                                <button id="expenseButton" class="btn btn-primary pull-right" style="margin-right:5px"><i class="fa fa-plus"></i> Expense</button>
                             </div>
                             <!-- content-->
                             <div id="myTabContent" class="tab-content">
@@ -303,7 +303,7 @@
                                         <div class="table-responsive">
 											<table cellpadding="0" class="table table-striped stripe row-border display nowrap" cellspacing="0" border="0" id="data-table3" width="100%">
 												<thead>
-													<tr class='dt-body-left'>
+													<tr>
 														<th>FLOOR</th>
 														<th>ROOM #</th>
 														<th>RATE per Annually</th>
@@ -341,7 +341,7 @@
                                     </div>
 								</div>
 								<!-- isi tab expense -->
-								<div class="tab-pane fade in" id="tabexpensei">
+								<div class="tab-pane fade in" id="expensei">
 									<div class="page-grid">
 										<div class="row">
 											<div style="margin-bottom:25px;margin-left:275px" class="pull-left col-lg-3">
@@ -365,7 +365,7 @@
                                         <div class="table-responsive">
 											<table cellpadding="0" class="table table-striped stripe row-border display nowrap" cellspacing="0" border="0" id="data-table5" width="100%">
 												<thead>
-													<tr class='dt-body-left'>
+													<tr>
 														<th>ID Expense</th>
 														<th>Date</th>
 														<th>Details</th>
@@ -567,7 +567,7 @@
  						<!-- tab expense -->
                         <div id="tabexpense">
                             <div class="page-form">
-                                <form id="expense" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
+                                <form id="expenseForm" class="form-horizontal" role="form" method="post" action="" autocomplete="off">
                                     
                                     <div class="form-group">
                                         <label for="edateex" class="control-label col-lg-3">Date</label>
@@ -592,7 +592,6 @@
                                                 <option value="rtrw fee">RT/RW fee</option>
                                                 <option value="tvcable">TV Cable</option>
                                                 <option value="internet">Internet</option>
-                                                <option value="tvcable">TV Cable</option>
                                                 <option value="electricity">Electricity</option>
                                                 <option value="laundry">Laundry</option>
                                                 <option value="other">Other</option>
@@ -613,7 +612,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="confirmExpense" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Add Expense</button>
+						<button id="confirmExpense" type="button" class="btn btn-primary btn-sm" >Add Expense</button>
 					</div>
 				</div>
 			</div>
