@@ -1,3 +1,16 @@
+//Booking list
+var table1 = $('#booking-list').DataTable({
+	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
+	"iDisplayLength": -1,
+	"sPaginationType": "full_numbers",
+	"order": [[ 0, "asc" ]],
+	"columnDefs": [
+	{
+		targets: 0,
+		width: "11%"
+	}]
+})	
+
 function removeOptions(selectbox) {
 	
     //clear select options
@@ -102,10 +115,28 @@ function addPayment() {
 	
 }
 
+//approve booking in table
+function approveBooking(idBook){
+	$('#approve_'+idBook).css("background-color","#c8bca6");
+	$('#approve_'+idBook).prop('disabled', true);
+}
+
+//delete booking in table
+function deleteBooking(idBook){
+	var row = table1.row('#'+idBook);
+	row.remove();
+	table1.draw(false);
+}
 $(document).ready(function() {
 	
 	//Booking list
-	var table1 = $('#booking-list').DataTable({
+	table1.row.add(["0001","Jeremia Raymond","09/07/2018","Jl. Dipatiukur","<button id='approve_booking1' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking1')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking1')><i class='fa fa-times'></i></button>"]).node().id = 'booking1';
+	table1.row.add(["0002","Kevin Owen","12/17/2018","Jl. Dipatiukur1","<button id='approve_booking2' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking2')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking2')><i class='fa fa-times'></i></button>"]).node().id = 'booking2';
+	table1.row.add(["0006","Wendy Wendy","10/09/2018","Jl. Dipatiukur2","<button id='approve_booking3' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking3')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking3')><i class='fa fa-times'></i></button>"]).node().id = 'booking3';
+	table1.draw();
+	
+	//key list
+	var table6 = $('#keyC-list').DataTable({
 		"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
         "iDisplayLength": -1,
 		"sPaginationType": "full_numbers",
@@ -113,14 +144,19 @@ $(document).ready(function() {
 		"columnDefs": [
 		{
 			targets: 0,
-			width: "11%"
-		}]
+			width: "20%"
+		},
+		{
+			targets: -1,
+			width: "20%"
+		},
+		]
 	})
 	
-	table1.row.add(["0001","Jeremia Raymond","09/07/2018","Jl. Dipatiukur"]).node().id = 'booking1';
-	table1.row.add(["0002","Kevin Owen","12/17/2018","Jl. Dipatiukur1"]).node().id = 'booking2';
-	table1.row.add(["0006","Wendy Wendy","10/09/2018","Jl. Dipatiukur2"]).node().id = 'booking3';
-	table1.draw();
+	table6.row.add(["<a href='javaScript:void(0)'>Aleksandra Hyde</a>","101 010 500","12/10/2018","20/09/2018","<button id='key_1' class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenant('key1')><i class='fa fa-envelope'></i></button> <button id='collectbutt' class='btn btn-xs btn-primary' title='Collect' onclick=collectedKey('key1')><i class='fa fa-check'></i></button>"]).node().id = 'key1';
+	table6.row.add(["<a href='javaScript:void(0)'>Amari O'Reilly</a>","101 020 100","10/09/2018","10/08/2018","<button id='key_1' class='btn btn-xs btn-success' title='Mail Tenant' onclick=mailTenant('key2')><i class='fa fa-envelope'></i></button> <button id='collectbutt' class='btn btn-xs btn-primary' title='Collect' onclick=collectedKey('key2')><i class='fa fa-check'></i></button>"]).node().id = 'key2';
+	table6.draw();
+	
 	
 	//overdue
 	var table2 = $('#overdue-list').DataTable({
