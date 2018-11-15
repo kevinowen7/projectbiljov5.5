@@ -31,6 +31,7 @@
 		<!-- Custom CSS -->
 		<link href="css/style.css" rel="stylesheet">
         <style>
+		.dataTables_filter{ display: none; }
 		.dataTables_wrapper .dataTables_length {
 			float: right;
 		}
@@ -204,10 +205,12 @@
                                         </div>
                                     </div>
                                  </div>
-                                <div class="col-lg-3 pull-right">
-                                    <button id="adder" class="btn btn-success pull-right" onClick="addRoom(document.getElementById('buildNo').value)"><i class="fa fa-plus"></i> Room</button>
+								 <div class="pull-right">
+									<button id="expenseButton" class="btn btn-primary pull-right" style="margin-right:5px"><i class="fa fa-plus"></i> Expense</button>
+								</div>
+                                <div class="pull-right">
+                                    <button id="adder" class="btn btn-success pull-right" onClick="addRoom(document.getElementById('buildNo').value)" style="margin-right:5px"><i class="fa fa-plus"></i> Room</button>
                                 </div>
-                                
                             </div>
                             &nbsp;
                             <!-- tab -->
@@ -216,20 +219,16 @@
                                 <li id="tabtenanti"><a href="#tenanti" data-toggle="tab">Summary</a></li>
 								<li id="tabexpensei"><a href="#expensei" data-toggle="tab">Expense</a></li>
                             </ul>
-                            
-                            <div class="pull-right">
-                                <button id="expenseButton" class="btn btn-primary pull-right" style="margin-right:5px"><i class="fa fa-plus"></i> Expense</button>
-                            </div>
                             <!-- content-->
                             <div id="myTabContent" class="tab-content">
                                 <!-- isi tab room info -->
                                 <div class="tab-pane fade in active" id="roomi">
 									<div class="row">
-										<div style="margin-bottom:25px" class="col-lg-4 pull-left">
+										<div style="margin-bottom:10px" class="col-lg-4 pull-left">
 											<label for="totalR" class="control-label" style="margin-top:15px">Total Room: </label>
 											<span id="totalR" name="totalR" /></span>
 										</div>
-										<div class="col-lg-3 col-xs-pull-4 pull-right">
+										<div class="col-lg-3 pull-right">
 											<select id="froom" name="froom" class="form-control">
 												<option value="">Filter</option>
 												<option value="Last Edited">Last Edited</option>
