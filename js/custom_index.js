@@ -34,6 +34,8 @@ function login(){
 				$("#loadingGrp").fadeOut(300, function() {
 					$(this).hide();
 				})
+				//unlock form
+				$("input,button").prop("disabled",false);
 				//add notification
 				$.gritter.add({
 					title: 'Error',
@@ -48,6 +50,8 @@ function login(){
 				$("#loadingGrp").fadeOut(300, function() {
 					$(this).hide();
 				})
+				//unlock form
+				$("input,button").prop("disabled",false);
 				//add notification
 				$.gritter.add({
 					title: 'Error',
@@ -65,6 +69,8 @@ function login(){
 		$("#loadingGrp").fadeOut(300, function() {
 			$(this).hide();
 		})
+		//unlock form
+		$("input,button").prop("disabled",false);
 		//add notification
 		$.gritter.add({
 			title: 'Error',

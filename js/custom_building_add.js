@@ -56,6 +56,13 @@ function removePhoto(numb) {
 	
 }
 
+function getFileExtension(filename) {
+	
+	//get file extension such as .jpg .png .bmp etc
+	return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+	
+}
+
 function totalFloorKeyup() {
 	
 	//listen every change on total floor input
@@ -150,45 +157,7 @@ function totalRoomCount() {
 
 function resetForm() {
 	
-	//reset progress bar
-	for(i=1; i<=7; i++) {
-		$("#progBar"+i).css("width","0%");
-	}
-	//unlock form
-	$("input").prop('disabled', false);
-	$("select").prop('disabled', false);
-	$("#adcity").prop('disabled', true);
-	//clear every photo submitted
-	var pMax = document.getElementById("maxPic").value;
-	for(i=1; i<=pMax; i++) {
-		document.getElementById("prepiew"+i).src = "img/empty-photo.jpg";
-		document.getElementById("fileName"+i).value = "";
-		$("#removep"+i).hide();
-		if (i!=1) {
-			$("#gambar"+i).hide();
-		}
-		if (pMax!=7) {
-			$("#gambar"+(parseInt(pMax)+1)).hide();
-		}
-	}
-	document.getElementById("fileButton").value = "";
-	document.getElementById("picCount").value = "";
-	document.getElementById("maxPic").value = "0";
-	//reset total floor
-	var count = document.getElementById("totflor").value;
-	$("#troom").hide();
-	for(i=1; i<=count; i++) {
-		document.getElementById("rminflr"+i).remove();
-	}
-	$("#totroom").html(0);
-	//reset dropdown city
-	document.getElementById("adcity").disabled = true;
-	//reset threshold
-	$("#thresholdCounter").val(0);
-	//scroll back to top
-	$('html, body').animate({
-		scrollTop: 0
-	}, 500);
+	location.reload();
 	
 }
 
@@ -243,9 +212,9 @@ function unlockForm() {
 function uploadDB() {
 	
 	//start loading icon
-	$("#loadingUpload").fadeIn(250, function() {
-		$(this).removeClass("hide");
-	})
+	$("#cover-spin").fadeIn(250, function() {
+		$(this).show();
+	});
 	lockForm();
 	var buildType = "residential";
 	if (buildType == "residential") {
@@ -259,235 +228,205 @@ function uploadDB() {
 			buildNo = "0"+String(i);
 		}
 	}
-	//check building if exist
-	const checkBuild = firebase.database().ref("property/"+buildType+"/"+"building_no:"+buildNo);
-	checkBuild.once('value', function(snapshot) {
-		//doesn't exist
-		if (snapshot.child("address_city").val() == null) {
-			//listen value to reach threshold
-			$("#thresholdCounter").change(function() {
-				if ($(this).val() == "7") {
-					//stop threshold listener
-					$("#thresholdCounter").off();
-					//read data from input
-					var ad_strt = $("#adstreet").val();
-					var ad_rt = $("#adrt").val();
-					var ad_rw = $("#adrw").val();
-					var ad_kel = $("#adkel").val();
-					var ad_kec = $("#adkec").val();
-					var ad_nwst = ad_strt+" RT "+ad_rt+" RW "+ad_rw+", "+ad_kel+", "+ad_kec;
-					var ad_city = $("#adcity").val();
-					var ad_prov = $("#adprov").val();
-					var ad_zipc = $("#adzip").val();
-					var coord_lat = $("#latitude").val();
-					var coord_long = $("#longitude").val();
-					var filename1 = buildType2+buildNo+"_1.jpg";
-					if ($("#fileName1").val() == "") {
-						filename1 = "empty";
+	if ($("#buildnovalid").val() == "valid") { //building doesn't exist
+		//read data from input
+		var ad_strt = $("#adstreet").val();
+		var ad_rt = $("#adrt").val();
+		var ad_rw = $("#adrw").val();
+		var ad_kel = $("#adkel").val();
+		var ad_kec = $("#adkec").val();
+		var ad_nwst = ad_strt+" RT "+ad_rt+" RW "+ad_rw+", "+ad_kel+", "+ad_kec;
+		var room_counter = [];
+		for (i=1;i<=$("#totflor").val();i++) {
+			room_counter.push($("#rminflr"+i).val());
+		}
+		//upload data to database
+		const dbRefBuild = firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo);
+		dbRefBuild.set({
+			address_street : ad_nwst,
+			address_city : $("#adcity").val(),
+			address_province : $("#adprov").val(),
+			address_zipcode : $("#adzip").val(),
+			coord_latitude : $("#latitude").val(),
+			coord_longitude : $("#longitude").val(),
+			total_floor: $("#totflor").val(),
+			total_room: $("#totroom").html(),
+			room_count: room_counter,
+			photos: {
+				photo1 : "empty",
+				photo2 : "empty",
+				photo3 : "empty",
+				photo4 : "empty",
+				photo5 : "empty",
+				photo6 : "empty",
+				photo7 : "empty"
+			},
+			facilities: {
+				bed : $("#bed").prop("checked"),
+				wardrb : $("#wardrb").prop("checked"),
+				table : $("#table").prop("checked"),
+				bthins : $("#bthins").prop("checked"),
+				wifi : $("#wifi").prop("checked"),
+				ctv : $("#ctv").prop("checked"),
+				hwater : $("#hwater").prop("checked"),
+				parker : $("#parker").prop("checked"),
+				laundy : $("#laundy").prop("checked"),
+				pwrtkn : $("#pwrtkn").prop("checked"),
+				ac : $("#ac").prop("checked"),
+				bedcvr : $("#bedcvr").prop("checked"),
+				secury : $("#secury").prop("checked"),
+				kitchn : $("#kitchn").prop("checked")
+			}
+		}).then(function onSuccess(res) {
+			//create empty room
+			var totflor = $("#totflor").val();
+			for(i=1; i<=totflor; i++) {
+				var floorNo = i;
+				for(j=1; j<=9; j++) {
+					if (floorNo==String(j)) {
+						floorNo="0"+String(j);
 					}
-					var filename2 = buildType2+buildNo+"_2.jpg";
-					if ($("#fileName2").val() == "") {
-						filename2 = "empty";
+				}
+				var dbRefFloor = firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/"+"floor:"+floorNo);
+				dbRefFloor.set({
+					floorplan : "empty"
+				}).catch(function onError(err) {
+					//error notification
+					$.gritter.add({
+						title: 'Error Ref Floor',
+						text: err.code+" : "+err.message,
+						image: './img/bell.png',
+						sticky: false,
+						time: 3500,
+						class_name: 'gritter-custom'
+					});
+					unlockForm();
+					//stop loading icon
+					$("#cover-spin").fadeOut(250, function() {
+						$(this).hide();
+					});
+				});
+				var rmInFlr = $("#rminflr"+parseInt(floorNo)).val();
+				for(k=1; k<=parseInt(rmInFlr); k++) {
+					var roomNo = k;
+					for(j=1; j<=9; j++) {
+						if (roomNo==String(j)) {
+							roomNo="0"+String(j);
+						}
 					}
-					var filename3 = buildType2+buildNo+"_3.jpg";
-					if ($("#fileName3").val() == "") {
-						filename3 = "empty";
-					}
-					var filename4 = buildType2+buildNo+"_4.jpg";
-					if ($("#fileName4").val() == "") {
-						filename4 = "empty";
-					}
-					var filename5 = buildType2+buildNo+"_5.jpg";
-					if ($("#fileName5").val() == "") {
-						filename5 = "empty";
-					}
-					var filename6 = buildType2+buildNo+"_6.jpg";
-					if ($("#fileName6").val() == "") {
-						filename6 = "empty";
-					}
-					var filename7 = buildType2+buildNo+"_7.jpg";
-					if ($("#fileName7").val() == "") {
-						filename7 = "empty";
-					}
-					var fac_bed = $("#bed").prop("checked");
-					var fac_wardrb = $("#wardrb").prop("checked");
-					var fac_table = $("#table").prop("checked");
-					var fac_bthins = $("#bthins").prop("checked");
-					var fac_wifi = $("#wifi").prop("checked");
-					var fac_ctv = $("#ctv").prop("checked");
-					var fac_hwater = $("#hwater").prop("checked");
-					var fac_parker = $("#parker").prop("checked");
-					var fac_laundy = $("#laundy").prop("checked");
-					var fac_pwrtkn = $("#pwrtkn").prop("checked");
-					var fac_ac = $("#ac").prop("checked");
-					var fac_bedcvr = $("#bedcvr").prop("checked");
-					var fac_secury = $("#secury").prop("checked");
-					var fac_kitchn = $("#kitchn").prop("checked");
-					//upload data to database
-					const dbRefBuild = firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo);
-					dbRefBuild.set({
-						address_street : ad_nwst,
-						address_city : ad_city,
-						address_province : ad_prov,
-						address_zipcode : ad_zipc,
-						coord_latitude : coord_lat,
-						coord_longitude : coord_long,
-						photos: {
-							photo1 : filename1,
-							photo2 : filename2,
-							photo3 : filename3,
-							photo4 : filename4,
-							photo5 : filename5,
-							photo6 : filename6,
-							photo7 : filename7
+					var idRoom = buildType2+buildNo+floorNo+roomNo;
+					var d = new Date();
+					var dbRefRoom = firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/"+"floor:"+floorNo+"/"+"ID:"+idRoom);
+					dbRefRoom.set({
+						availdate : "empty",
+						roomsize : "empty",
+						yearprice : "empty",
+						last_edited: (parseInt(d.getMonth())+1)+"/"+d.getDate()+"/"+d.getFullYear(),
+						photos : {
+							photo1 : "empty",
+							photo2 : "empty",
+							photo3 : "empty",
+							photo4 : "empty",
+							photo5 : "empty"
 						},
 						facilities: {
-							bed : fac_bed,
-							wardrb : fac_wardrb,
-							table : fac_table,
-							bthins : fac_bthins,
-							wifi : fac_wifi,
-							ctv : fac_ctv,
-							hwater : fac_hwater,
-							parker : fac_parker,
-							laundy : fac_laundy,
-							pwrtkn : fac_pwrtkn,
-							ac : fac_ac,
-							bedcvr : fac_bedcvr,
-							secury : fac_secury,
-							kitchn : fac_kitchn
+							bed : $("#bed").prop("checked"),
+							wardrb : $("#wardrb").prop("checked"),
+							table : $("#table").prop("checked"),
+							bthins : $("#bthins").prop("checked"),
+							wifi : $("#wifi").prop("checked"),
+							ctv : $("#ctv").prop("checked"),
+							hwater : $("#hwater").prop("checked"),
+							parker : $("#parker").prop("checked"),
+							laundy : $("#laundy").prop("checked"),
+							pwrtkn : $("#pwrtkn").prop("checked"),
+							ac : $("#ac").prop("checked"),
+							bedcvr : $("#bedcvr").prop("checked"),
+							secury : $("#secury").prop("checked"),
+							kitchn : $("#kitchn").prop("checked")
 						}
-					}).then(function onSuccess(res) {
-						//create empty room
-						var totflor = $("#totflor").val();
-						for(i=1; i<=totflor; i++) {
-							var floorNo = i;
-							for(j=1; j<=9; j++) {
-								if (floorNo==String(j)) {
-									floorNo="0"+String(j);
-								}
-							}
-							var rmInFlr = $("#rminflr"+parseInt(floorNo)).val();
-							for(k=1; k<=parseInt(rmInFlr); k++) {
-								var roomNo = k;
-								for(j=1; j<=9; j++) {
-									if (roomNo==String(j)) {
-										roomNo="0"+String(j);
-									}
-								}
-								var idRoom = buildType2+buildNo+floorNo+roomNo;
-								var dbRefRoom = firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/"+"floor:"+floorNo+"/"+"ID:"+idRoom);
-								dbRefRoom.set({
-									availdate : "empty",
-									roomsize : "empty",
-									yearprice : "empty",
-									photos : {
-										photo1 : "empty",
-										photo2 : "empty",
-										photo3 : "empty",
-										photo4 : "empty",
-										photo5 : "empty"
-									},
-									facilities: {
-										bed : fac_bed,
-										wardrb : fac_wardrb,
-										table : fac_table,
-										bthins : fac_bthins,
-										wifi : fac_wifi,
-										ctv : fac_ctv,
-										hwater : fac_hwater,
-										parker : fac_parker,
-										laundy : fac_laundy,
-										pwrtkn : fac_pwrtkn,
-										ac : fac_ac,
-										bedcvr : fac_bedcvr,
-										secury : fac_secury,
-										kitchn : fac_kitchn
-									}
-								}).catch(function onError(err) {
-									//error notification
-									$.gritter.add({
-										title: 'Error',
-										text: err.code+" : "+err.message,
-										image: './img/bell.png',
-										sticky: false,
-										time: 3500,
-										class_name: 'gritter-custom'
-									})
-									unlockForm();
-									//stop loading icon
-									$("#loadingUpload").fadeOut(250, function() {
-										$(this).hide();
-									})
-								})
-								var dbRefSK = firebase.database().ref().child("codesystem/IDs:"+idRoom);
-								dbRefSK.set({
-									ID : idRoom+"00",
-									building_type : buildType,
-									building_no : buildNo,
-									floor_no : floorNo,
-									room_no : roomNo,
-									tenant_no : "00"
-								}).catch(function onError(err) {
-									//error notification
-									$.gritter.add({
-										title: 'Error',
-										text: err.code+" : "+err.message,
-										image: './img/bell.png',
-										sticky: false,
-										time: 3500,
-										class_name: 'gritter-custom'
-									})
-									unlockForm();
-									//stop loading icon
-									$("#loadingUpload").fadeOut(250, function() {
-										$(this).hide();
-									})
-								})
-							}
-						}
-						//success notification
-						$.gritter.add({
-							title: 'Building Uploaded',
-							text: 'Building was successfully uploaded to the database.',
-							image: './img/bell.png',
-							sticky: false,
-							time: 3500,
-							class_name: 'gritter-custom'
-						})
-						unlockForm();
-						$("#breset").trigger("click");
-						//scroll back to top
-						$('html, body').animate({
-							scrollTop: 0
-						}, 500);
-						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
-							$(this).hide();
-						})
-						window.location="building_list.html"
 					}).catch(function onError(err) {
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Ref Room',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
 							time: 3500,
 							class_name: 'gritter-custom'
-						})
+						});
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
-						})
-					})
+						});
+					});
+					var dbRefSK = firebase.database().ref().child("codesystem/IDs:"+idRoom);
+					dbRefSK.set({
+						ID : idRoom+"00",
+						building_type : buildType,
+						building_no : buildNo,
+						floor_no : floorNo,
+						room_no : roomNo,
+						tenant_no : "00"
+					}).catch(function onError(err) {
+						//error notification
+						$.gritter.add({
+							title: 'Error Ref Room_Code',
+							text: err.code+" : "+err.message,
+							image: './img/bell.png',
+							sticky: false,
+							time: 3500,
+							class_name: 'gritter-custom'
+						});
+						unlockForm();
+						//stop loading icon
+						$("#cover-spin").fadeOut(250, function() {
+							$(this).hide();
+						});
+					});
 				}
-			})
+			}
+			//listen value to reach threshold
+			$("#thresholdCounter").change(function() {
+				if ($(this).val() == "7") { //wait until finish uploading
+					//stop threshold listener
+					$("#thresholdCounter").off();
+					//create floorplan form
+					$("#floorPlanner").empty();
+					for (i=1;i<=$("#totflor").val();i++) {
+						var floorPlanBlock = `
+							<div id="floorPlanner_floor${i}" class="form-group">
+								<label class="col-lg-2 control-label">Floor ${i}</label>
+								<div class="col-lg-6">
+									<div id="floorPlanner_floor${i}_block">
+										<input id="floorPlanner_floor${i}_file" type="file" accept=".jpg,.jpeg,.png">
+										<p class="help-block">Click to upload your file.</p>
+									</div>
+									<div id="floorPlanner_floor${i}_load" class="checkbox" style="display:none;">
+										<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
+										<span class="sr-only">Loading...</span>
+									</div>
+									<div id="floorPlanner_floor${i}_done" class="checkbox" style="display:none;">
+										<i class="fa fa-check-circle-o fa-lg fa-fw green"></i>
+										<span class="sr-only">Complete</span>
+									</div>
+								</div>
+							</div>`;
+						$("#floorPlanner").append(floorPlanBlock);
+					}
+					//trigger modal popup
+					$("#modalConfirm").modal({backdrop: 'static', keyboard: false});
+					//stop loading icon
+					$("#cover-spin").fadeOut(250, function() {
+						$(this).hide();
+					});
+				}
+			});
 			//photo 1
 			if ($("#fileName1").val() != "") {
 				var photo1 = $("#prepiew1").attr("src");
-				var filename1 = buildType2+buildNo+"_1.jpg";
+				var filename1 = buildType2+buildNo+"_1."+getFileExtension($("#fileName1").val());
 				var storageRef1 = firebase.storage().ref('images/building/'+filename1);
 				var task1 = storageRef1.putString(photo1, 'data_url');
 				task1.on('state_changed',
@@ -497,10 +436,9 @@ function uploadDB() {
 						$("#progBar1").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 1',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -509,11 +447,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo1 : filename1
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -525,7 +466,7 @@ function uploadDB() {
 			//photo 2
 			if ($("#fileName2").val() != "") {
 				var photo2 = $("#prepiew2").attr("src");
-				var filename2 = buildType2+buildNo+"_2.jpg";
+				var filename2 = buildType2+buildNo+"_2."+getFileExtension($("#fileName2").val());
 				var storageRef2 = firebase.storage().ref('images/building/'+filename2);
 				var task2 = storageRef2.putString(photo2, 'data_url');
 				task2.on('state_changed',
@@ -535,10 +476,9 @@ function uploadDB() {
 						$("#progBar2").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 2',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -547,11 +487,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo2 : filename2
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -563,7 +506,7 @@ function uploadDB() {
 			//photo 3
 			if ($("#fileName3").val() != "") {
 				var photo3 = $("#prepiew3").attr("src");
-				var filename3 = buildType2+buildNo+"_3.jpg";
+				var filename3 = buildType2+buildNo+"_3."+getFileExtension($("#fileName3").val());
 				var storageRef3 = firebase.storage().ref('images/building/'+filename3);
 				var task3 = storageRef3.putString(photo3, 'data_url');
 				task3.on('state_changed',
@@ -573,10 +516,9 @@ function uploadDB() {
 						$("#progBar3").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 3',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -585,11 +527,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo3 : filename3
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -601,7 +546,7 @@ function uploadDB() {
 			//photo 4
 			if ($("#fileName4").val() != "") {
 				var photo4 = $("#prepiew4").attr("src");
-				var filename4 = buildType2+buildNo+"_4.jpg";
+				var filename4 = buildType2+buildNo+"_4."+getFileExtension($("#fileName4").val());
 				var storageRef4 = firebase.storage().ref('images/building/'+filename4);
 				var task4 = storageRef4.putString(photo4, 'data_url');
 				task4.on('state_changed',
@@ -611,10 +556,9 @@ function uploadDB() {
 						$("#progBar4").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 4',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -623,11 +567,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo4 : filename4
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -639,7 +586,7 @@ function uploadDB() {
 			//photo 5
 			if ($("#fileName5").val() != "") {
 				var photo5 = $("#prepiew5").attr("src");
-				var filename5 = buildType2+buildNo+"_5.jpg";
+				var filename5 = buildType2+buildNo+"_5."+getFileExtension($("#fileName5").val());
 				var storageRef5 = firebase.storage().ref('images/building/'+filename5);
 				var task5 = storageRef5.putString(photo5, 'data_url');
 				task5.on('state_changed',
@@ -649,10 +596,9 @@ function uploadDB() {
 						$("#progBar5").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 5',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -661,11 +607,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo5 : filename5
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -677,7 +626,7 @@ function uploadDB() {
 			//photo 6
 			if ($("#fileName6").val() != "") {
 				var photo6 = $("#prepiew6").attr("src");
-				var filename6 = buildType2+buildNo+"_6.jpg";
+				var filename6 = buildType2+buildNo+"_6."+getFileExtension($("#fileName6").val());
 				var storageRef6 = firebase.storage().ref('images/building/'+filename6);
 				var task6 = storageRef6.putString(photo6, 'data_url');
 				task6.on('state_changed',
@@ -687,10 +636,9 @@ function uploadDB() {
 						$("#progBar6").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 6',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -699,11 +647,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo6 : filename6
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -715,7 +666,7 @@ function uploadDB() {
 			//photo 7
 			if ($("#fileName7").val() != "") {
 				var photo7 = $("#prepiew7").attr("src");
-				var filename7 = buildType2+buildNo+"_7.jpg";
+				var filename7 = buildType2+buildNo+"_7."+getFileExtension($("#fileName7").val());
 				var storageRef7 = firebase.storage().ref('images/building/'+filename7);
 				var task7 = storageRef7.putString(photo7, 'data_url');
 				task7.on('state_changed',
@@ -725,10 +676,9 @@ function uploadDB() {
 						$("#progBar7").css("width",percentage+"%");
 					},
 					function error(err) {
-						break;
 						//error notification
 						$.gritter.add({
-							title: 'Error',
+							title: 'Error Image 7',
 							text: err.code+" : "+err.message,
 							image: './img/bell.png',
 							sticky: false,
@@ -737,11 +687,14 @@ function uploadDB() {
 						})
 						unlockForm();
 						//stop loading icon
-						$("#loadingUpload").fadeOut(250, function() {
+						$("#cover-spin").fadeOut(250, function() {
 							$(this).hide();
 						})
 					},
 					function complete() {
+						firebase.database().ref().child("property/"+buildType+"/"+"building_no:"+buildNo+"/photos").update({
+							photo7 : filename7
+						});
 						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 						$("#thresholdCounter").trigger("change");
 					}
@@ -750,40 +703,118 @@ function uploadDB() {
 				$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
 				$("#thresholdCounter").trigger("change");
 			}
-		//exist
-		} else {
+		}).catch(function onError(err) {
 			//error notification
 			$.gritter.add({
-				title: 'Error',
-				text: 'Building number already in use.',
+				title: 'Error Ref Build',
+				text: err.code+" : "+err.message,
 				image: './img/bell.png',
 				sticky: false,
 				time: 3500,
 				class_name: 'gritter-custom'
-			})
+			});
 			unlockForm();
 			//stop loading icon
-			$("#loadingUpload").fadeOut(250, function() {
+			$("#cover-spin").fadeOut(250, function() {
 				$(this).hide();
-			})
-		}
-	})
+			});
+		});
+	} else { //building exist
+		unlockForm();
+		//error notification
+		$.gritter.add({
+			title: 'Error',
+			text: 'Building number already in use.',
+			image: './img/bell.png',
+			sticky: false,
+			time: 3500,
+			class_name: 'gritter-custom'
+		});
+		//stop loading icon
+		$("#cover-spin").fadeOut(250, function() {
+			$(this).hide();
+		});
+		//scroll to input field
+		$([document.documentElement, document.body]).animate({
+			scrollTop: $("#buildno").offset().top
+		}, 1000);
+	}
 	
 }
 
 $(document).ready(function() {
 	
+	//building number listener
+	$('#buildno').on('change keyup click', function () {
+		var nowBuild = $("#buildno").val();
+		for(j=1; j<=9; j++) {
+			if (nowBuild == String(j)) {
+				nowBuild = "0"+String(j);
+			}
+		}
+		$("#buildnovalid").val("invalid");
+		const dbCheck = firebase.database().ref("property/residential/building_no:"+nowBuild);
+		dbCheck.once('value', function(snapshot) {
+			if ($("#buildno").val() == "") { //empty input
+				$("#buildnovalid").val("invalid");
+				$("#buildtrue").fadeOut(100, function() {
+					$(this).hide();
+				});
+				$("#buildfalse").fadeOut(100, function() {
+					$(this).hide();
+				});
+			} else if (parseInt(nowBuild) < 1 || parseInt(nowBuild) > 99) { //invalid number
+				$("#buildnovalid").val("invalid");
+				$("#buildtrue").fadeOut(100, function() {
+					$(this).hide();
+					$("#buildfalse").fadeIn(100, function() {
+						$(this).show();
+					});
+				});
+			} else if (!snapshot.hasChildren()) { //building does not exist
+				$("#buildnovalid").val("valid");
+				$("#buildfalse").fadeOut(100, function() {
+					$(this).hide();
+					$("#buildtrue").fadeIn(100, function() {
+						$(this).show();
+					});
+				});
+			} else { //building exist
+				$("#buildnovalid").val("invalid");
+				$("#buildtrue").fadeOut(100, function() {
+					$(this).hide();
+					$("#buildfalse").fadeIn(100, function() {
+						$(this).show();
+					});
+				});
+			}
+		});
+	});
 	//building number auto suggest
-	const dbRef = firebase.database().ref("property/residential").limitToLast(1);
-	dbRef.once('child_added', function(snapshot) {
-		var lastBuildNumber = parseInt(snapshot.key.split(":")[1]);
-		var suggestBuildNumber  = lastBuildNumber+1;
-		$("#buildno").val(suggestBuildNumber);
-		$("#buildno").prop('readonly',false);
-		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
-			$(this).hide();
-		})
+	const dbRef = firebase.database().ref().child("property/residential").limitToLast(1);
+	dbRef.once('value', function(snapshot) {
+		if (snapshot.hasChildren()) { //a building exist in database
+			dbRef.once('child_added', function(snapshot) {
+				var lastBuildNumber = parseInt(snapshot.key.split(":")[1]);
+				var suggestBuildNumber  = lastBuildNumber+1;
+				$("#buildno").val(suggestBuildNumber);
+				$("#buildno").prop('readonly',false);
+				$("#buildno").trigger("change");
+				//stop loading icon
+				$("#cover-spin").fadeOut(250, function() {
+					$(this).hide();
+				})
+			})
+		} else { //no building exist in database
+			var suggestBuildNumber  = 1;
+			$("#buildno").val(suggestBuildNumber);
+			$("#buildno").prop('readonly',false);
+			$("#buildno").trigger("change");
+			//stop loading icon
+			$("#cover-spin").fadeOut(250, function() {
+				$(this).hide();
+			})
+		}
 	})
 	//province dropdown listener
 	$('#adprov').on('change', function () {
@@ -942,7 +973,119 @@ $(document).ready(function() {
 	theParent.addEventListener("keyup", totalRoom, false);
 	//modal confirmation listener
 	$("#confirmYes").on('click', function () {
-		uploadDB();
+		var buildType = "residential";
+		if (buildType == "residential") {
+			var buildType2 = "1";
+		} else {
+			var buildType2 = "2";
+		}
+		var buildNo = $("#buildno").val();
+		for(j=1; j<=9; j++) {
+			if (buildNo == String(j)) {
+				buildNo = "0"+String(j);
+			}
+		}
+		for (i=1;i<=$("#totflor").val();i++) {
+			$("#floorPlanner_floor"+i+"_block").hide();
+			$("#floorPlanner_floor"+i+"_load").fadeIn(200, function() {
+				$(this).show();
+			});
+		}
+		$(".modal-footer").children().prop("disabled",true);
+		$("#thresholdCounter").val("0");
+		$("#thresholdCounter").change(function() {
+			if ($(this).val() == $("#totflor").val()) { //wait until finish uploading
+				//stop threshold listener
+				$("#thresholdCounter").off();
+				$("#thresholdCounter").val("0");
+				$("#thresholdCounter").change(function() {
+					if ($(this).val() == $("#totflor").val()) { //wait until finish uploading
+						//success notification
+						$.gritter.add({
+							title: 'Building created',
+							text: 'Building successfully added to the database.',
+							image: './img/bell.png',
+							sticky: false,
+							time: 3500,
+							class_name: 'gritter-custom'
+						})
+						setTimeout(function(){
+							window.location = "building_list.html";
+						}, 2000);
+					}
+				});
+				for (i=1;i<=$("#totflor").val();i++) {
+					if ($("#floorPlanner_floor"+i+"_file").get(0).files.length !== 0) { //file selector not empty
+						var currFloorNo = i;
+						var filename_x2 = buildType2+buildNo+"_floor"+i+".jpg";
+						for(j=1; j<=9; j++) {
+							if (currFloorNo == String(j)) {
+								currFloorNo = "0"+String(j);
+							}
+						}
+						firebase.database().ref("property/"+buildType+"/building_no:"+buildNo+"/floor:"+currFloorNo).update({
+							floorplan : filename_x2
+						}).then(function onSuccess(res) {
+							$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+							$("#thresholdCounter").trigger("change");
+						}).catch(function onError(err) {
+							//error notification
+							$.gritter.add({
+								title: 'Error Floorplan DB Image '+i,
+								text: err.code+" : "+err.message,
+								image: './img/bell.png',
+								sticky: false,
+								time: 3500,
+								class_name: 'gritter-custom'
+							});
+							$(".modal-footer").children().prop("disabled",false);
+						});
+					} else {
+						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+						$("#thresholdCounter").trigger("change");
+					}
+				}
+			}
+		});
+		for (i=1;i<=$("#totflor").val();i++) {
+			if ($("#floorPlanner_floor"+i+"_file").get(0).files.length !== 0) { //file selector not empty
+				var file_x = $("#floorPlanner_floor"+i+"_file").get(0).files[0];
+				var filename_x = buildType2+buildNo+"_floor"+i+"."+getFileExtension(file_x.name);
+				var storageRef_x = firebase.storage().ref('images/building/'+filename_x);
+				var task_x = storageRef_x.put(file_x);
+				task_x.on('state_changed',
+					//progressbar animation
+					function progress(snapshot) {
+						
+					},
+					function error(err) {
+						//error notification
+						$.gritter.add({
+							title: 'Error Floorplan Image '+i,
+							text: err.code+" : "+err.message,
+							image: './img/bell.png',
+							sticky: false,
+							time: 3500,
+							class_name: 'gritter-custom'
+						});
+						$(".modal-footer").children().prop("disabled",false);
+					},
+					function complete() {
+						$("#floorPlanner_floor"+i+"_load").fadeOut(200, function() {
+							$("#floorPlanner_floor"+i+"_load").hide();
+							$("#floorPlanner_floor"+i+"_done").fadeIn(200, function() {
+								$("#floorPlanner_floor"+i+"_done").show();
+							});
+						});
+						$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+						$("#thresholdCounter").trigger("change");
+					}
+				)
+			} else { //file selector empty
+				$("#thresholdCounter").val(parseInt($("#thresholdCounter").val())+1);
+				$("#thresholdCounter").trigger("change");
+			}
+		}
 	})
 
 })
@@ -951,8 +1094,7 @@ $().ready(function() {
 
 	$("#inpBuild").validate({
 		submitHandler: function() {
-			//trigger modal popup
-			$("#modalConfirm").modal();
+			uploadDB();
 		},
 		rules: {
 			buildno: {

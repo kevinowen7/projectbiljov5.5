@@ -1,7 +1,7 @@
 //Booking list
 var table1 = $('#booking-list').DataTable({
-	"aLengthMenu": [[10, 20, -1], [10, 20, "All"]],
-	"iDisplayLength": -1,
+	"aLengthMenu": [[3, 6, -1], [3, 6, "All"]],
+	"iDisplayLength": 3,
 	"sPaginationType": "full_numbers",
 	"order": [[ 0, "asc" ]],
 	"columnDefs": [
@@ -133,6 +133,11 @@ $(document).ready(function() {
 	table1.row.add(["0001","Jeremia Raymond","09/07/2018","Jl. Dipatiukur","<button id='approve_booking1' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking1')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking1')><i class='fa fa-times'></i></button>"]).node().id = 'booking1';
 	table1.row.add(["0002","Kevin Owen","12/17/2018","Jl. Dipatiukur1","<button id='approve_booking2' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking2')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking2')><i class='fa fa-times'></i></button>"]).node().id = 'booking2';
 	table1.row.add(["0006","Wendy Wendy","10/09/2018","Jl. Dipatiukur2","<button id='approve_booking3' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking3')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking3')><i class='fa fa-times'></i></button>"]).node().id = 'booking3';
+	table1.row.add(["0008","Wendy 1","10/09/2018","Jl. Dipatiukur2","<button id='approve_booking4' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking4')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking4')><i class='fa fa-times'></i></button>"]).node().id = 'booking4';
+	table1.row.add(["0009","Wendy 2","10/09/2018","Jl. Dipatiukur2","<button id='approve_booking5' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking5')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking5')><i class='fa fa-times'></i></button>"]).node().id = 'booking5';
+	table1.row.add(["0010","Wendy 3","10/09/2018","Jl. Dipatiukur2","<button id='approve_booking6' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking6')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking6')><i class='fa fa-times'></i></button>"]).node().id = 'booking6';
+	table1.row.add(["0012","Wendy 5","10/09/2018","Jl. Dipatiukur2","<button id='approve_booking7' class='btn btn-xs btn-success' title='Approve' onclick=approveBooking('booking7')><i class='fa fa-check'></i></button> <button id='removebutt' class='btn btn-xs btn-danger' title='Delete' onclick=deleteBooking('booking7')><i class='fa fa-times'></i></button>"]).node().id = 'booking7';
+	
 	table1.draw();
 	
 	//key list

@@ -9,12 +9,10 @@ var table = $('#data-table1').DataTable({
 		targets: 0,
 		orderData: [0,1],
 		className: 'dt-body-right',
-		width: "8%"
 	},
 	{
 		targets: 1,
 		orderData: [1,0],
-		width: "8%"
 	},
 	{
 		targets: 2,
@@ -61,7 +59,7 @@ var table3 = $('#data-table3').DataTable({
 		width: "3%"
 	},
 	{
-		targets: [2,9,10,11],
+		targets: [2,8,9,10],
 		width: "25%"
 	},
 	{
@@ -69,11 +67,11 @@ var table3 = $('#data-table3').DataTable({
 		width: "4%"
 	},
 	{
-		targets: [2,3,4,5,6,8,9,10,11],
+		targets: [2,3,4,5,6,8,7,9,10],
 		orderable: false
 	},
 	{
-		targets: [2,9,10,11],
+		targets: [2,8,9,10],
 		render: $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ',',-' )
 	}]
 })
@@ -90,8 +88,22 @@ var table5 = $('#data-table5').DataTable({
 	}]
 })
 
-
-
+//untuk menampilkan photo floor plan
+function addFloorPlan(x){
+	x = parseInt(x);
+	var batas = 1;
+	while(batas<=x){
+		var textx=`<div style="margin-bottom:10px;margin-left:15px" class="pull-left">
+					<label for="flp`+String(batas)+`" class="control-label" style="margin-top:15px">Floor Plan #`+String(batas)+` </label>
+					<span id="flp`+String(batas)+`" name="flp`+String(batas)+`" /></span>
+					</br>
+					<button id="id`+batas+`" type="button" class="btn btn-xs btn-primary" onClick="showPhoto(`+(batas)+`)"><i class="fa fa-share-square-o "></i>Show</button>
+					<a id="id`+batas+`img" href="img/tenant.jpg"></a>
+				</div>`;
+		$("#floorPlan").append(textx);
+		batas=batas+1
+	}
+}
 function addRoom(buildNo) {
 	
 	for(j=1; j<=9; j++) {
@@ -402,6 +414,11 @@ function addExpense(){
 }
 	
 $(document).ready(function() {
+	//start jquery prettyphoto
+	$(".prettyphoto").prettyPhoto({
+		overlay_gallery: false, 
+		social_tools: false
+	})
 	//expense add button listener
 	$("#expenseButton").on('click', function() {
 		$("#modalExpense").modal();
@@ -455,6 +472,9 @@ $(document).ready(function() {
 	$('#buildNo').on('keyup', function (e) {
 		//enter trigger
 		if(e.which === 13){
+			//menghapus floorplan
+			$("#floorPlan").empty();
+			//check
 			var buildno = $(this).val();
 			for(j=1; j<=9; j++) {
 				if (buildno==String(j)) {
@@ -471,56 +491,48 @@ $(document).ready(function() {
 			//define table to work with jquery datatables
 			if (Ref == 1){
 				// change address and total room
-				$("#totalR").html("9")
-				$("#totalR1").html("9")
 				$("#propaddr_s").html("Jl. Skipper No. 15 RT 12 RW 23, Nigga, What");
 				$("#buildNo").html($("#buildNo").val())
 				//input data from database to table
-				table3.row.add(["01","<a id='1010101' href='javaScript:void(0);' onclick='editRoom(1010101)'>01</a>",3000000,"","","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1010102' href='javaScript:void(0);' onclick='editRoom(1010102)'>02</a>",3000000,"","","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1010103' href='javaScript:void(0);' onclick='editRoom(1010103)'>03</a>",3000000,"<a id='t_5 ' href='tenant_details.html?id=t_5#ledger'>Aleksandra Hyde</a>","1-May-08","31-Oct-08","101 010 500","monthly","0813-94715874",275000,0,"(Rp. 275.000,-)"]);
-				table3.row.add(["02","<a id='1010201' href='javaScript:void(0);' onclick='editRoom(1010201)'>01</a>",3000000,"<a id='t_6 ' href='tenant_details.html?id=t_6#ledger'>Amari O'Reilly</a>","1-Apr-08","30-Sep-08","101 020 100","monthly","022 - 9199 3781",225000,0,"(Rp. 225.000,-)"]);
-				table3.row.add(["02","<a id='1010202' href='javaScript:void(0);' onclick='editRoom(1010202)'>02</a>",3000000,"<a id='t_7 ' href='tenant_details.html?id=t_7#ledger'>Jan Garrison</a>","1-May-08","30-Oct-08","101 020 200","monthly","0856-2032552",215000,215000,0]);
-				table3.row.add(["02","<a id='1010203' href='javaScript:void(0);' onclick='editRoom(1010203)'>03</a>",2700000,"<a id='t_3 ' href='tenant_details.html?id=t_3#ledger'>Briana Holloway</a>","1-May-08","<p>30-Oct-08</p><p>Bond</p>","101 020 300","monthly","0813-20093906",150000,275000,125000]);
-				table3.row.add(["03","<a id='1010301' href='javaScript:void(0);' onclick='editRoom(1010301)'>01</a>",2700000,"<a id='t_4 ' href='tenant_details.html?id=t_4#ledger'>Zakary Neville</a>","27-May-08","<p>26-Oct-08</p><p>Bond</p>","101 030 100","monthly","0857-59936957",225000,275000,50000]);
-				table3.row.add(["03","<a id='1010302' href='javaScript:void(0);' onclick='editRoom(1010302)'>02</a>",2700000,"<a id='t_2 ' href='tenant_details.html?id=t_2#ledger'>Kevin Owen</a>","8-May-08","<p>7-Nov-08</p><p>Bond</p>","101 030 200","6 month","0857-22102914",225000,225000,0]);
-				table3.row.add(["03","<a id='1010303' href='javaScript:void(0);' onclick='editRoom(1010303)'>03</a>",3000000,"<a id='t_8 ' href='tenant_details.html?id=t_8#ledger'>Pamela Daugherty</a>","1-May-08","<p>31-Oct-08</p>","101 030 300","6 month","0819-10225333",215000,300000,85000]);
+				table3.row.add(["01","<a id='1010101' href='javaScript:void(0);' onclick='editRoom(1010101)'>01</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1010102' href='javaScript:void(0);' onclick='editRoom(1010102)'>02</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1010103' href='javaScript:void(0);' onclick='editRoom(1010103)'>03</a>",3000000,"<a id='t_5 ' href='tenant_details.html?id=t_5#ledger'>Aleksandra Hyde</a>","1-May-08","31-Oct-08","101 010 500","monthly",275000,0,"(Rp. 275.000,-)"]);
+				table3.row.add(["02","<a id='1010201' href='javaScript:void(0);' onclick='editRoom(1010201)'>01</a>",3000000,"<a id='t_6 ' href='tenant_details.html?id=t_6#ledger'>Amari O'Reilly</a>","1-Apr-08","30-Sep-08","101 020 100","monthly",225000,0,"(Rp. 225.000,-)"]);
+				table3.row.add(["02","<a id='1010202' href='javaScript:void(0);' onclick='editRoom(1010202)'>02</a>",3000000,"<a id='t_7 ' href='tenant_details.html?id=t_7#ledger'>Jan Garrison</a>","1-May-08","30-Oct-08","101 020 200","monthly",215000,215000,0]);
+				table3.row.add(["02","<a id='1010203' href='javaScript:void(0);' onclick='editRoom(1010203)'>03</a>",2700000,"<a id='t_3 ' href='tenant_details.html?id=t_3#ledger'>Briana Holloway</a>","1-May-08","<p>30-Oct-08</p>","101 020 300","monthly",150000,275000,125000]);
+				table3.row.add(["03","<a id='1010301' href='javaScript:void(0);' onclick='editRoom(1010301)'>01</a>",2700000,"<a id='t_4 ' href='tenant_details.html?id=t_4#ledger'>Zakary Neville</a>","27-May-08","<p>26-Oct-08</p>","101 030 100","monthly",225000,275000,50000]);
+				table3.row.add(["03","<a id='1010302' href='javaScript:void(0);' onclick='editRoom(1010302)'>02</a>",2700000,"<a id='t_2 ' href='tenant_details.html?id=t_2#ledger'>Kevin Owen</a>","8-May-08","<p>7-Nov-08</p>","101 030 200","six month",225000,225000,0]);
+				table3.row.add(["03","<a id='1010303' href='javaScript:void(0);' onclick='editRoom(1010303)'>03</a>",3000000,"<a id='t_8 ' href='tenant_details.html?id=t_8#ledger'>Pamela Daugherty</a>","1-May-08","<p>31-Oct-08</p>","101 030 300","six month",215000,300000,85000]);
 				table3.draw(false);
 			}
 			if (Ref == 3){
 				// change address and total room
-				$("#totalR").html("14")
-				$("#totalR1").html("14")
 				$("#propaddr_s").html("GG. H. SIROD NO 16, CIHAMPELAS")
 				$("#buildNo").html($("#buildNo").val())
 				//input data from database to table
-				table3.row.add(["01","<a id='1030101' href='javaScript:void(0);' onclick='editRoom(1030101)'>01</a>",3000000,"","","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030102' href='javaScript:void(0);' onclick='editRoom(1030102)'>02</a>",3000000,"","","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030103' href='javaScript:void(0);' onclick='editRoom(1030103)'>03</a>",3000000,"<a id='t_5' href='javaScript:void(0);'>M.Gaha Wendy</a>","1-May-08","31-Oct-08","101 010 300","monthly","0813-94715874",275000,0,"Rp (275.000,-)"]);
-				table3.row.add(["01","<a id='1030104' href='javaScript:void(0);' onclick='editRoom(1030104)'>04</a>",3000000,"<a id='t_6' href='javaScript:void(0);'>Christian FT</a>","1-Apr-08","30-Sep-08","101 010 400","monthly","022 - 9199 3781",225000,0,"Rp (225.000,-)"]);
-				table3.row.add(["01","<a id='1030105' href='javaScript:void(0);' onclick='editRoom(1030105)'>05</a>",3000000,"","","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030106' href='javaScript:void(0);' onclick='editRoom(1030106)'>06</a>",3000000,"","","","","","",0,0,0]);
-				table3.row.add(["01","<a id='1030107' href='javaScript:void(0);' onclick='editRoom(1030107)'>07</a>",3000000,"<a id='t_7' href='javaScript:void(0);'>Inu Wisnu</a>","1-May-08","30-Oct-08","101 010 700","monthly","0856-2032552",215000,215000,0]);
-				table3.row.add(["02","<a id='1030201' href='javaScript:void(0);' onclick='editRoom(1030201)'>01</a>",2700000,"","","","","","",0,0,0]);
-				table3.row.add(["02","<a id='1030202' href='javaScript:void(0);' onclick='editRoom(1030202)'>02</a>",2700000,"<a id='t_3' href='javaScript:void(0);'>Lidha Lismanawati</a>","1-May-08","<p>30-Oct-08</p><p>Bond</p>","101 020 200","monthly","0813-20093906",150000,125000,"Rp (25.000,-)"]);
-				table3.row.add(["02","<a id='1030203' href='javaScript:void(0);' onclick='editRoom(1030203)'>03</a>",2700000,"<a id='t_4' href='javaScript:void(0);'>Ai Tuti Sulastri</a>","27-May-08","<p>26-Oct-08</p><p>Bond</p>","101 020 300","monthly","0857-59936957",225000,275000,50000]);
-				table3.row.add(["02","<a id='1030204' href='javaScript:void(0);' onclick='editRoom(1030204)'>04</a>",2700000,"<a id='t_2' href='javaScript:void(0);'>Rahmawati Shaumah</a>","8-May-08","<p>7-Nov-08</p><p>Bond</p>","101 020 400","6 month","0857-22102914",225000,225000,0]);
-				table3.row.add(["02","<a id='1030205' href='javaScript:void(0);' onclick='editRoom(1030205)'>05</a>",3000000,"<a id='t_8' href='javaScript:void(0);'>Fanny Astriani</a>","1-May-08","<p>31-Oct-08</p>","101 020 500","6 month","0819-10225333",215000,300000,85000]);
-				table3.row.add(["02","<a id='1030206' href='javaScript:void(0);' onclick='editRoom(1030206)'>06</a>",2700000,"<a id='t_9' href='javaScript:void(0);'>Nina Tanuatmadja</a>","1-May-08","<p>31-Oct-08</p>","101 020 600","6 month","0857-20517210",200000,200000,0]);
-				table3.row.add(["02","<a id='1030207' href='javaScript:void(0);' onclick='editRoom(1030207)'>07</a>",3500000,"<a id='t_10' href='javaScript:void(0);'>Yulmedianti K</a>","1-May-08","<p>31-Oct-08</p><p>Bond</p>","101 020 700","6 month","0852-22305695",350000,350000,0]);
+				table3.row.add(["01","<a id='1030101' href='javaScript:void(0);' onclick='editRoom(1030101)'>01</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030102' href='javaScript:void(0);' onclick='editRoom(1030102)'>02</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030103' href='javaScript:void(0);' onclick='editRoom(1030103)'>03</a>",3000000,"<a id='t_5' href='javaScript:void(0);'>M.Gaha Wendy</a>","1-May-08","31-Oct-08","101 010 300","monthly",275000,0,"Rp (275.000,-)"]);
+				table3.row.add(["01","<a id='1030104' href='javaScript:void(0);' onclick='editRoom(1030104)'>04</a>",3000000,"<a id='t_6' href='javaScript:void(0);'>Christian FT</a>","1-Apr-08","30-Sep-08","101 010 400","monthly",225000,0,"Rp (225.000,-)"]);
+				table3.row.add(["01","<a id='1030105' href='javaScript:void(0);' onclick='editRoom(1030105)'>05</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030106' href='javaScript:void(0);' onclick='editRoom(1030106)'>06</a>",3000000,"","","","","",0,0,0]);
+				table3.row.add(["01","<a id='1030107' href='javaScript:void(0);' onclick='editRoom(1030107)'>07</a>",3000000,"<a id='t_7' href='javaScript:void(0);'>Inu Wisnu</a>","1-May-08","30-Oct-08","101 010 700","monthly",215000,215000,0]);
+				table3.row.add(["02","<a id='1030201' href='javaScript:void(0);' onclick='editRoom(1030201)'>01</a>",2700000,"","","","","",0,0,0]);
+				table3.row.add(["02","<a id='1030202' href='javaScript:void(0);' onclick='editRoom(1030202)'>02</a>",2700000,"<a id='t_3' href='javaScript:void(0);'>Lidha Lismanawati</a>","1-May-08","<p>30-Oct-08</p>","101 020 200","monthly",150000,125000,"Rp (25.000,-)"]);
+				table3.row.add(["02","<a id='1030203' href='javaScript:void(0);' onclick='editRoom(1030203)'>03</a>",2700000,"<a id='t_4' href='javaScript:void(0);'>Ai Tuti Sulastri</a>","27-May-08","<p>26-Oct-08</p>","101 020 300","monthly",225000,275000,50000]);
+				table3.row.add(["02","<a id='1030204' href='javaScript:void(0);' onclick='editRoom(1030204)'>04</a>",2700000,"<a id='t_2' href='javaScript:void(0);'>Rahmawati Shaumah</a>","8-May-08","<p>7-Nov-08</p>","101 020 400","6 month",225000,225000,0]);
+				table3.row.add(["02","<a id='1030205' href='javaScript:void(0);' onclick='editRoom(1030205)'>05</a>",3000000,"<a id='t_8' href='javaScript:void(0);'>Fanny Astriani</a>","1-May-08","<p>31-Oct-08</p>","101 020 500","six month",215000,300000,85000]);
+				table3.row.add(["02","<a id='1030206' href='javaScript:void(0);' onclick='editRoom(1030206)'>06</a>",2700000,"<a id='t_9' href='javaScript:void(0);'>Nina Tanuatmadja</a>","1-May-08","<p>31-Oct-08</p>","101 020 600","six month",200000,200000,0]);
+				table3.row.add(["02","<a id='1030207' href='javaScript:void(0);' onclick='editRoom(1030207)'>07</a>",3500000,"<a id='t_10' href='javaScript:void(0);'>Yulmedianti K</a>","1-May-08","<p>31-Oct-08</p>","101 020 700","six month",350000,350000,0]);
 				table3.draw(false);
 			}
 			if (Ref == 7){
 				// change address and total room
-				$("#totalR").html("0")
-				$("#totalR1").html("0")
 				$("#propaddr_s").html("Jl. Private No. 2 RT 3 RW 4, Yes, No")
 				$("#buildNo").html($("#buildNo").val())
 			}
 			// else
 			if (Ref != 1 && Ref != 3 && Ref != 7){
-				$("#totalR").html("0")
-				$("#totalR1").html("0")
 				$("#propaddr_s").html("NOT FOUND")
 				$("#buildNo").html($("#buildNo").val())
 			}
@@ -536,11 +548,15 @@ $(document).ready(function() {
 			table
 				.clear()
 				.draw();
-			
 			var dbRef0 = firebase.database().ref().child("property/residential/building_no:"+buildno);
 			dbRef0.once('value', function(snapshot) {
 				if (snapshot.child("address_street").val() == null) {
 					$("#propaddr_s").val(null);
+					//jika building tidak ada
+					$("#totalR").html("0")
+					$("#totalR1").html("0")
+					$("#totalF").html("0")
+					$("#totalF1").html("0")	
 					//stop loading icon
 					$("#cover-spin").fadeOut(250, function() {
 						$(this).hide();
@@ -556,6 +572,12 @@ $(document).ready(function() {
 					if (buildList[2].buildid == String(buildno)){
 						$("#propaddr_s").val(buildList[2].address1);
 					}
+					//fill total floor and total room
+					$("#totalR").html(snapshot.child("total_room").val())
+					$("#totalR1").html(snapshot.child("total_room").val())
+					$("#totalF").html(snapshot.child("total_floor").val())
+					$("#totalF1").html(snapshot.child("total_floor").val())
+					addFloorPlan(snapshot.child("total_floor").val())
 					//firebase
 					dbRef0.on('child_added', function(snapshot) {
 						if (snapshot.key.split(":")[0] == "floor") {
@@ -792,6 +814,7 @@ $(document).ready(function() {
 	})
 	//fill array with data from database
 	const dbRefBuild = firebase.database().ref("property/residential");
+
 	dbRefBuild.on('child_added', function(snapshot) {
 		var build_numb = snapshot.key.split(":")[1];
 		var ad_st = snapshot.child("address_street").val();
@@ -816,21 +839,6 @@ $(document).ready(function() {
 				return 1;
 			return 0; //default return value (no sorting)
 		});
-		//stop loading icon
-		$("#cover-spin").fadeOut(250, function() {
-			//collect id from link
-			var refBuild = window.location.href.split('=');
-			if (refBuild[1] == undefined) {
-				//no building number defined
-				document.getElementById('buildNo').value = "1";
-				$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
-			} else if (refBuild[1] != "undefined") {
-				//building number defined
-				document.getElementById('buildNo').value = parseInt(refBuild[1]);
-				$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
-			}
-			$(this).hide();
-		})
 	});
 	//start property address autocomplete
 	$("#propaddr_s").autocomplete({
@@ -848,8 +856,27 @@ $(document).ready(function() {
 			$("#buildNo").val(ui.item.buildid);
 			$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
 		}
+		
 	})
 	
+	//stop loading ketika data sudah di ambil dari firebase
+	dbRefBuild.once('value', function(snapshot) {
+	//stop loading icon
+		$("#cover-spin").fadeOut(250, function() {
+		//collect id from link
+		var refBuild = window.location.href.split('=');
+		if (refBuild[1] == undefined) {
+			//no building number defined
+			document.getElementById('buildNo').value = "1";
+			$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
+		} else if (refBuild[1] != "undefined") {
+			//building number defined
+			document.getElementById('buildNo').value = parseInt(refBuild[1]);
+			$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
+		}
+		$(this).hide();
+		})
+	})
 	
 	//price listener
 	$('#data-table1 tbody').on('dblclick', '.cptprice', function () {
@@ -894,27 +921,6 @@ $(document).ready(function() {
 		}
 	})
 	
-	// redirect from buildList
-	var link_ = window.location.href.split('#')[1];
-	if (link_=="tenanti"){
-		$("#tenanti").addClass("in active")
-		$("#roomi").removeClass("in active")
-		$("#expensei").removeClass("in active")
-		$("#tabroomi").removeClass("active")
-		$("#tabexpensei").removeClass("active")
-		$("#tabtenanti").addClass("active")
-	}
 	
-	//collect id from link
-	var refBuild = window.location.href.split('=');
-	if (refBuild[1] == undefined) {
-		//no building number defined
-		document.getElementById('buildNo').value = "1";
-		$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
-	} else if (refBuild[1] != "undefined") {
-		//building number defined
-		document.getElementById('buildNo').value = parseInt(refBuild[1]);
-		$("#buildNo").trigger(jQuery.Event('keyup', {which: 13}));
-	}
 	
 })

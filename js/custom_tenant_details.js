@@ -36,6 +36,7 @@ var ledgerList = [];
 var bondWaitDue = 0;
 var historyperiod = 1;
 
+
 function removeOptions(selectbox) {
 	
     //clear select options
