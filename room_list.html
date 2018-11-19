@@ -15,11 +15,13 @@
 		<!-- Styles -->
 		<!-- Bootstrap CSS -->
 		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<!-- jQuery Datatables -->
-		<link href="css/jquery.dataTables.css" rel="stylesheet">
-        <!-- Bootstrap Date-Time Picker CSS -->
+		<!-- Bootstrap Date-Time Picker CSS -->
 		<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 		<link href="css/bootstrap-datepicker3.min.css" rel="stylesheet">
+		<!-- jQuery prettyPhoto -->
+		<link href="css/prettyPhoto.css" rel="stylesheet">
+		<!-- jQuery Datatables -->
+		<link href="css/jquery.dataTables.css" rel="stylesheet">
 		<!-- jQuery UI -->
 		<link href="css/jquery-ui.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
@@ -224,9 +226,13 @@
                                 <!-- isi tab room info -->
                                 <div class="tab-pane fade in active" id="roomi">
 									<div class="row">
-										<div style="margin-bottom:10px" class="col-lg-4 pull-left">
+										<div style="margin-bottom:10px" class="col-lg-2 pull-left">
 											<label for="totalR" class="control-label" style="margin-top:15px">Total Room: </label>
 											<span id="totalR" name="totalR" /></span>
+										</div>
+										<div style="margin-bottom:10px" class="pull-left">
+											<label for="totalF" class="control-label" style="margin-top:15px">Total Floor: </label>
+											<span id="totalF" name="totalF" /></span>
 										</div>
 										<div class="col-lg-3 pull-right">
 											<select id="froom" name="froom" class="form-control">
@@ -234,6 +240,11 @@
 												<option value="Last Edited">Last Edited</option>
 												<option value="Available">Available</option>
 											</select>
+										</div>
+									</div>
+									<div class="row">
+										<div id="floorPlan">
+											<!-- floor plan yang nanti akan di append-->
 										</div>
 									</div>
                                     <div class="col">
@@ -277,11 +288,15 @@
                                 <div class="tab-pane fade in" id="tenanti">
 									<div class="page-grid">
 										<div class="row">
-											<div style="margin-bottom:25px" class="col-lg-3 pull-left">
+											<div style="margin-bottom:25px" class="col-lg-2 pull-left">
 												<label for="totalR" class="control-label" style="margin-top:15px">Total Room: </label>
 												<span id="totalR1" name="totalR1" /></span>
 											</div>
-											<div style="margin-bottom:25px" class="pull-left col-lg-3">
+											<div style="margin-bottom:10px" class="pull-left">
+												<label for="totalF1" class="control-label" style="margin-top:15px">Total Floor: </label>
+												<span id="totalF1" name="totalF1" /></span>
+											</div>
+											<div style="margin-bottom:25px;margin-left:50px" class="pull-left col-lg-3">
 												<label for="sdate" class="control-label"></label>
 												<div id="sdatepicker" class="input-group date">
 													<input id="sdate" name="sdate" type="text" class="form-control" placeholder="Pick Starting Date" readonly required>
@@ -300,20 +315,19 @@
 									<div class="page-tables">
                                         <!-- Table -->
                                         <div class="table-responsive">
-											<table cellpadding="0" class="table table-striped stripe row-border display nowrap" cellspacing="0" border="0" id="data-table3" width="100%">
+											<table cellpadding="0" class="table table-striped stripe row-border" cellspacing="0" border="0" id="data-table3" width="100%">
 												<thead>
 													<tr>
-														<th>FLOOR</th>
-														<th>ROOM #</th>
-														<th>RATE per Annually</th>
-														<th>Tenant Name</th>
-														<th>Tenant Start</th>
-														<th>Tenant End</th>
-														<th>Tenant Ref#</th>
-														<th>Tenant Plan</th>
-														<th>Tenant Phone</th>
-														<th>Payment Due</th>
-														<th>Payment Received</th>
+														<th>FL#</th>
+														<th>RM#</th>
+														<th>RATE Per Annually</th>
+														<th>Name</th>
+														<th>Start Date</th>
+														<th>End Date</th>
+														<th>Ref#</th>
+														<th>Plan</th>
+														<th>Due</th>
+														<th>Received</th>
 														<th>Balance</th>
 													</tr>
 												</thead>
@@ -321,7 +335,6 @@
 												<tfoot>
 													<tr>
 														<th>Total</th>
-														<th>&nbsp;</th>
 														<th>&nbsp;</th>
 														<th>&nbsp;</th>
 														<th>&nbsp;</th>

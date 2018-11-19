@@ -7,7 +7,7 @@
 		<meta name="description" content="Your description">
 		<meta name="keywords" content="Your,Keywords">
 		<meta name="author" content="ResponsiveWebInc">
-		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+		<script src="js/firebase.js"></script> <!-- version 5.5.8 -->
     	<script src="js/firebase_config.js"></script>
         
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -258,6 +258,9 @@
 											</div>
 										</div>
 									</div>
+									<div id="floorPlanBlock">
+										
+									</div>
 									<div class="form-group">
 										<label for="fileButton" class="control-label col-lg-2">Photos</label>
 										<div id="gambar1" class="col-lg-2" style="display:none;">
@@ -266,7 +269,8 @@
 												<div id="progBar1" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep1' type="button" onclick="removePhoto(1)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName1" name="fileName1" type="hidden" value="">
+											<input id="fileName1" type="hidden" value="">
+											<input id="fileName1replaced" type="hidden" value="">
 										</div>
 										<div id="gambar2" class="col-lg-2" style="display:none;">
 											<a id="jump2" href="javascript:void(0);" onclick="getFileName(2)"><img id="prepiew2" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
@@ -274,7 +278,8 @@
 												<div id="progBar2" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep2' type="button" onclick="removePhoto(2)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName2" name="fileName2" type="hidden" value="">
+											<input id="fileName2" type="hidden" value="">
+											<input id="fileName2replaced" type="hidden" value="">
 										</div>
 										<div id="gambar3" class="col-lg-2" style="display:none;">
 											<a id="jump3" href="javascript:void(0);" onclick="getFileName(3)"><img id="prepiew3" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
@@ -282,7 +287,8 @@
 												<div id="progBar3" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep3' type="button" onclick="removePhoto(3)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName3" name="fileName3" type="hidden" value="">
+											<input id="fileName3" type="hidden" value="">
+											<input id="fileName3replaced" type="hidden" value="">
 										</div>
 										<div id="gambar4" class="col-lg-2" style="display:none;">
 											<a id="jump4" href="javascript:void(0);" onclick="getFileName(4)"><img id="prepiew4" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
@@ -290,7 +296,8 @@
 												<div id="progBar4" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep4' type="button" onclick="removePhoto(4)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName4" name="fileName4" type="hidden" value="">
+											<input id="fileName4" type="hidden" value="">
+											<input id="fileName4replaced" type="hidden" value="">
 										</div>
 									</div>
 									<div class="form-group">
@@ -300,7 +307,8 @@
 												<div id="progBar5" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep5' type="button" onclick="removePhoto(5)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName5" name="fileName5" type="hidden" value="">
+											<input id="fileName5" type="hidden" value="">
+											<input id="fileName5replaced" type="hidden" value="">
 										</div>
 										<div id="gambar6" class="col-lg-2" style="display:none;">
 											<a id="jump6" href="javascript:void(0);" onclick="getFileName(6)"><img id="prepiew6" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
@@ -308,7 +316,8 @@
 												<div id="progBar6" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep6' type="button" onclick="removePhoto(6)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName6" name="fileName6" type="hidden" value="">
+											<input id="fileName6" type="hidden" value="">
+											<input id="fileName6replaced" type="hidden" value="">
 										</div>
 										<div id="gambar7" class="col-lg-2" style="display:none;">
 											<a id="jump7" href="javascript:void(0);" onclick="getFileName(7)"><img id="prepiew7" src="img/empty-photo.jpg" class="img-responsive" alt="empty image" /></a>
@@ -316,14 +325,19 @@
 												<div id="progBar7" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 											</div>
 											<button id='removep7' type="button" onclick="removePhoto(7)" class='btn btn-xs btn-danger' title='remove picture' style="display:none;position:absolute;top:0;"><i class='fa fa-times'></i></button>
-											<input id="fileName7" name="fileName7" type="hidden" value="">
+											<input id="fileName7" type="hidden" value="">
+											<input id="fileName7replaced" type="hidden" value="">
 										</div>
 									</div>
 									<div class="form-group">
 										<div class="col-lg-offset-2 col-lg-10">
-											<input id="fileButton" name="fileButton" type="file" accept=".jpg,.jpeg" style="display: none" />
+											<input id="fileButton" name="fileButton" type="file" accept=".jpg,.jpeg,.png" style="display: none" />
 											<input id="picCount" name="picCount" type="hidden" value="">
 											<input id="maxPic" name="maxPic" type="hidden" value="0">
+											<input id="total_floor" name="total_floor" type="hidden" value="">
+											<input id="total_room" name="total_room" type="hidden" value="">
+											<input id="room_count" name="room_count" type="hidden" value="">
+											<input id="thresholdCounter" name="tresholdCounter" type="hidden" value="0">
                                         	<button id="bfinish" type="submit" class="btn btn-danger">Update</button>
 											<span>&nbsp;</span>
 											<span id="loadingUpload" style="display: none;">
@@ -349,16 +363,16 @@
 		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header">
+					<div class="modal-header" style="background-color:#ED4747;">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">Warning</h4>
+						<h4 class="modal-title" style="color:#FFF"><b>Warning</b></h4>
 					</div>
 					<div class="modal-body">
 						<p>Are you sure you want to update this building?</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Save changes</button>
+						<button id="confirmYes" type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-hidden="true">Save changes</button>
 					</div>
 				</div>
 			</div>

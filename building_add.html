@@ -7,7 +7,7 @@
 		<meta name="description" content="Your description">
 		<meta name="keywords" content="Your,Keywords">
 		<meta name="author" content="ResponsiveWebInc">
-		<script src="js/firebase.js"></script> <!-- version 5.3.1 -->
+		<script src="js/firebase.js"></script> <!-- version 5.5.8 -->
     	<script src="js/firebase_config.js"></script>
         
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,6 +156,13 @@
 										<div class="col-lg-2">
 											<input id="buildno" name="buildno" class="form-control" type="number" min="1" max="99" readonly />
 											<p class="help-block">Example: 1</p>
+											<input id="buildnovalid" name="buildnovalid" type="hidden" value="invalid">
+										</div>
+										<div class="col-lg-2">
+											<div class="checkbox">
+												<i id="buildtrue" class="fa fa-check-circle fa-lg" style="color:#42C557;display:none;"></i>
+												<i id="buildfalse" class="fa fa-times-circle fa-lg" style="color:#ED4747;display:none;"></i>
+											</div>
 										</div>
 									</div>
 									<div class="form-group">
@@ -365,12 +372,12 @@
 									</div>
 									<div class="form-group">
 										<div class="col-lg-offset-2 col-lg-10">
-											<input id="fileButton" name="fileButton" type="file" accept=".jpg,.jpeg" style="display: none" />
+											<input id="fileButton" name="fileButton" type="file" accept=".jpg,.jpeg,.png" style="display: none" />
 											<input id="picCount" name="picCount" type="hidden" value="">
 											<input id="maxPic" name="maxPic" type="hidden" value="0">
 											<input id="thresholdCounter" name="tresholdCounter" type="hidden" value="0">
                                         	<button id="bfinish" type="submit" class="btn btn-danger">Submit</button>
-											<button id="breset" type="reset" onclick="resetForm()" class="btn btn-default">Reset</button>
+											<button id="breset" type="button" onclick="resetForm()" class="btn btn-default">Reset</button>
 											<span>&nbsp;</span>
 											<span id="loadingUpload" style="display: none;">
 												<i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw red"></i>
@@ -395,16 +402,16 @@
 		<div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x	</button>
-						<h4 class="modal-title">Warning</h4>
+					<div class="modal-header" style="background-color:#ED4747;">
+						<h4 class="modal-title" style="color:#FFF"><b>Input Building</b></h4>
 					</div>
 					<div class="modal-body">
-						<p>Are you sure you want to add this building?</p>
+						<div id="floorPlanner" class="form-horizontal">
+							
+						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button id="confirmYes" type="button" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Save</button>
+						<button id="confirmYes" type="button" class="btn btn-danger btn-sm">Upload</button>
 					</div>
 				</div>
 			</div>
